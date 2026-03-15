@@ -1,32 +1,35 @@
 <script>
-    // Supabase bilgilerini buraya gir
+    // 1. Bilgileri Tanımla
     const SUPABASE_URL = 'https://nwgmvlnuycmuyxycjxzv.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53Z212bG51eWNtdXl4eWNqeHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzY2MzcsImV4cCI6MjA4OTExMjYzN30.Ewdar4Gzw870VXofPj95tg_kKCizzS2gH3patBoZn_I'; // Publishable key buraya gelecek
+    const SUPABASE_KEY = 'BeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53Z212bG51eWNtdXl4eWNqeHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzY2MzcsImV4cCI6MjA4OTExMjYzN30.Ewdar4Gzw870VXofPj95tg_kKCizzS2gH3patBoZn_I';
 
-    // Bağlantıyı Başlat
+    // 2. Bağlantıyı Başlat (İsmi _supabase yaptım ki karışmasın)
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Durumu Kontrol Et
+    // 3. Bağlantı Kontrolü
     if(_supabase) {
+        console.log("Bağlantı başarılı!");
         document.getElementById('db-status').innerText = 'ONLINE';
         document.getElementById('db-status').style.color = '#00ff41';
     }
 
+    // Kayıt Fonksiyonu
     async function handleRegister() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const { data, error } = await _supabase.auth.signUp({ email, password });
         
-        if (error) { document.getElementById('status-msg').innerText = "ERROR: " + error.message; }
-        else { document.getElementById('status-msg').innerText = "SUCCESS: Check your email!"; }
+        if (error) { document.getElementById('status-msg').innerText = "HATA: " + error.message; }
+        else { document.getElementById('status-msg').innerText = "BAŞARILI: E-postanı kontrol et!"; }
     }
 
+    // Giriş Fonksiyonu
     async function handleLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
-        if (error) { document.getElementById('status-msg').innerText = "ERROR: " + error.message; }
-        else { document.getElementById('status-msg').innerText = "WELCOME, " + data.user.email; }
+        if (error) { document.getElementById('status-msg').innerText = "HATA: " + error.message; }
+        else { document.getElementById('status-msg').innerText = "HOŞ GELDİN: " + data.user.email; }
     }
 </script>
