@@ -8,174 +8,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000; /* Mutlak Siyah */
-            --panel-bg: #080808; /* Çok Koyu Gri Panel */
-            --text: #ffffff; /* Saf Beyaz */
-            --text-dim: #666666; /* Soluk Gri */
-            --border: #1a1a1a; /* Keskin Sınır Çizgisi */
-            --accent: #ffffff; /* Aksan Rengi de Beyaz */
+            --bg: #000000;
+            --panel-bg: #080808;
+            --text: #ffffff;
+            --text-dim: #666666;
+            --border: #1a1a1a;
             --font-main: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
         }
 
         * { box-sizing: border-box; }
+        body { background-color: var(--bg); color: var(--text); font-family: var(--font-main); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: var(--font-main);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden; /* Taşmaları engelle */
-        }
+        .logo { position: absolute; top: 30px; left: 40px; font-size: 1.4rem; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+        .status { position: absolute; top: 35px; right: 40px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
 
-        /* Minimalist Logo */
-        .logo {
-            position: absolute;
-            top: 30px;
-            left: 40px;
-            font-family: var(--font-main);
-            font-size: 1.4rem;
-            color: var(--text);
-            font-weight: 800;
-            letter-spacing: -1px; /* Harfleri birbirine yaklaştır */
-            text-transform: uppercase;
-        }
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; z-index: 10; }
+        .panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
+        .panel-content { padding: 60px; }
 
-        .status {
-            position: absolute;
-            top: 35px;
-            right: 40px;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* Ana Konteyner */
-        .main-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Panellerin Elit Stili */
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 4px; /* Hafif kavis, keskin his */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* Derinlik kat */
-            position: relative;
-            overflow: hidden;
-        }
-
-        .panel-content {
-            padding: 60px;
-        }
-
-        /* Auth Paneli */
         .auth-panel { width: 400px; text-align: center; }
-        .auth-panel h2 { font-weight: 700; font-size: 1.1rem; margin-bottom: 40px; letter-spacing: 1px; color: var(--text); text-transform: uppercase; }
+        .auth-panel h2 { font-weight: 700; font-size: 1.1rem; margin-bottom: 35px; letter-spacing: 1px; text-transform: uppercase; }
         
         input {
-            width: 100%;
-            padding: 18px;
-            margin-bottom: 15px;
-            background: transparent; /* Arka plan yok */
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-family: var(--font-main);
-            font-size: 0.9rem;
-            border-radius: 2px;
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; padding: 18px; margin-bottom: 12px; background: transparent; border: 1px solid var(--border);
+            color: var(--text); font-family: var(--font-main); font-size: 0.9rem; border-radius: 2px; outline: none; transition: border-color 0.2s;
         }
-        input:focus { border-color: var(--text); } /* Odaklanınca beyaz çerçeve */
+        input:focus { border-color: var(--text); }
 
         button {
-            width: 100%;
-            padding: 18px;
-            font-family: var(--font-main);
-            font-weight: 700;
-            border: none;
-            border-radius: 2px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: opacity 0.2s, background 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.85rem;
+            width: 100%; padding: 18px; font-family: var(--font-main); font-weight: 700; border: none; border-radius: 2px;
+            cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;
         }
-        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary { background: var(--text); color: #000; }
         .btn-primary:hover { opacity: 0.8; }
-        
         .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
         .btn-secondary:hover { border-color: var(--text); color: var(--text); }
         
-        .msg { margin-top: 30px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .msg { margin-top: 25px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 20px; text-transform: uppercase; }
 
-        /* Gizli Script Paneli */
         #script-panel { display: none; width: 90%; max-width: 1200px; }
-        .script-panel-content { padding: 50px; }
-        #script-panel h2 { font-weight: 800; font-size: 1.5rem; color: var(--text); margin-bottom: 10px; text-transform: uppercase; letter-spacing: -1px; }
-        .panel-subtitle { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 40px; font-weight: 300; }
-        
-        .script-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        
-        .script-card {
-            background: rgba(255,255,255,0.01); /* Çok hafif belirginlik */
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 2px;
-            transition: border-color 0.3s, transform 0.3s;
-            position: relative;
-        }
-        .script-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
-        
-        .script-card h3 { color: var(--text); margin-top: 0; font-family: var(--font-mono); font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .script-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 30px; line-height: 1.6; font-weight: 300; }
-        
-        .script-card button {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            padding: 10px 20px;
-            width: auto;
-            margin-top: 0;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-        }
+        .script-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 40px; }
+        .script-card { background: rgba(255,255,255,0.01); border: 1px solid var(--border); padding: 30px; border-radius: 2px; transition: 0.3s; }
+        .script-card:hover { border-color: rgba(255,255,255,0.2); }
+        .script-card h3 { color: var(--text); margin-top: 0; font-family: var(--font-mono); font-size: 1rem; text-transform: uppercase; }
+        .script-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 25px; font-weight: 300; }
+        .script-card button { background: transparent; border: 1px solid var(--border); color: var(--text-dim); padding: 10px 20px; width: auto; font-size: 0.75rem; }
         .script-card button:hover { border-color: var(--text); color: var(--text); }
         
-        .logout-btn {
-            margin-top: 60px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: #ff3333; /* Çıkış butonu hala kırmızı kalsın */
-            width: auto;
-            padding: 10px 25px;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-        }
+        .logout-btn { margin-top: 50px; background: transparent; border: 1px solid var(--border); color: #ff3333; width: auto; padding: 10px 25px; font-size: 0.75rem; }
         .logout-btn:hover { border-color: #ff3333; background: #ff3333; color: #fff; }
-
     </style>
 </head>
 <body>
 
     <div class="logo">VOID_KERNEL</div>
-    <div class="status">SYSTEM_STATUS: <span id="db-status" style="color: #ff3333;">OFFLINE</span></div>
+    <div class="status">SYS_STATUS: <span id="db-status" style="color: #ff3333;">OFFLINE</span></div>
 
     <div class="main-container">
         <div class="panel auth-panel" id="auth-panel">
             <div class="panel-content">
-                <h2>>_ AUTHENTICATION_REQUIRED</h2>
+                <h2>>_ AUTH_REQUIRED</h2>
+                <input type="text" id="nickname" placeholder="USER_NICKNAME">
                 <input type="email" id="email" placeholder="USER_EMAIL">
                 <input type="password" id="password" placeholder="ACCESS_KEY">
                 <button class="btn-primary" onclick="handleLogin()">LOGIN</button>
@@ -185,92 +79,72 @@
         </div>
 
         <div class="panel" id="script-panel">
-            <div class="panel-content script-panel-content">
+            <div class="panel-content">
                 <h2>>_ AUTHORIZED_RESOURCES</h2>
-                <p class="panel-subtitle">Yetkilendirme başarılı. Elit scriptler erişime açıldı.</p>
-                
+                <p id="welcome-msg" style="color: var(--text-dim); font-size: 0.95rem;">Yetkilendirme başarılı.</p>
                 <div class="script-grid">
                     <div class="script-card">
                         <h3>NETWORK_EXECUTOR.lua</h3>
                         <p>Ağ katmanındaki hız limitlerini ve paket kontrollerini devre dışı bırakır.</p>
                         <button onclick="copyScript('print(\'Network Executor Active\')')">COPY_CODE</button>
                     </div>
-
                     <div class="script-card">
                         <h3>KERNEL_AFK_BYPASS.lua</h3>
                         <p>Sistem seviyesindeki AFK algılama algoritmalarını simülasyon paketleriyle atlatır.</p>
                         <button onclick="copyScript('print(\'Kernel AFK Bypass Active\')')">COPY_CODE</button>
                     </div>
-                    
-                    <div class="script-card">
-                        <h3>SYSTEM_UI_DECRYPT.lua</h3>
-                        <p>Şifrelenmiş yönetici panellerini ve gizli sistem arayüzlerini deşifre eder.</p>
-                        <button onclick="copyScript('print(\'System UI Decrypt Active\')')">COPY_CODE</button>
-                    </div>
                 </div>
-
                 <button class="logout-btn" onclick="handleLogout()">TERMINATE_SESSION</button>
             </div>
         </div>
     </div>
 
     <script>
-        // SUPABASE BİLGİLERİ - KENDİ ANON KEYİNİ BURAYA YAPIŞTIR
         const SUPABASE_URL = 'https://nwgmvlnuycmuyxycjxzv.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53Z212bG51eWNtdXl4eWNqeHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzY2MzcsImV4cCI6MjA4OTExMjYzN30.Ewdar4Gzw870VXofPj95tg_kKCizzS2gH3patBoZn_I'; 
-
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Bağlantı Kontrolü
         if(_supabase) {
             document.getElementById('db-status').innerText = 'ONLINE';
-            document.getElementById('db-status').style.color = '#fff'; /* Online olunca beyaz yapalım */
+            document.getElementById('db-status').style.color = '#fff';
         }
 
-        // Kayıt İşlemi
         async function handleRegister() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const nick = document.getElementById('nickname').value;
             
-            if(!email || !password) { document.getElementById('status-msg').innerText = "ERR: Kutuları doldur baba!"; return; }
+            if(!email || !password || !nick) { document.getElementById('status-msg').innerText = "ERR: Tüm alanları doldur!"; return; }
 
-            const { error } = await _supabase.auth.signUp({ email, password });
+            const { error } = await _supabase.auth.signUp({
+                email,
+                password,
+                options: { data: { nickname: nick } } // Nickname'i metadata olarak kaydet
+            });
             
             if (error) document.getElementById('status-msg').innerText = "ERR: " + error.message;
-            else document.getElementById('status-msg').innerText = "SUCCESS: Doğrulama linki mailine gönderildi. Kontrol et!";
+            else document.getElementById('status-msg').innerText = "SUCCESS: Onay linki gönderildi.";
         }
 
-        // Giriş İşlemi
         async function handleLogin() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            if(!email || !password) { document.getElementById('status-msg').innerText = "ERR: Kutuları doldur baba!"; return; }
-
             const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
             
             if (error) {
                 document.getElementById('status-msg').innerText = "ERR: " + error.message;
             } else {
-                // GİRİŞ BAŞARILIYSA PANELLERİ DEĞİŞTİR
+                const userNick = data.user.user_metadata.nickname || "Unknown User";
                 document.getElementById('auth-panel').style.display = 'none';
                 document.getElementById('script-panel').style.display = 'block';
-                document.getElementById('db-status').innerText = "SESSION: " + data.user.email;
-                document.getElementById('db-status').style.color = "#fff";
+                document.getElementById('welcome-msg').innerText = "Giriş başarılı. Hoş geldin, " + userNick;
+                document.getElementById('db-status').innerText = "USER: " + userNick;
             }
         }
 
-        // Çıkış İşlemi
-        async function handleLogout() {
-            await _supabase.auth.signOut();
-            location.reload(); // Sayfayı yenileyip ana ekrana atar
-        }
-
-        // Script Kopyalama Fonksiyonu
-        function copyScript(code) {
-            navigator.clipboard.writeText(code);
-            alert("Script kopyalandı! Executor'ına yapıştırabilirsin.");
-        }
+        async function handleLogout() { await _supabase.auth.signOut(); location.reload(); }
+        function copyScript(code) { navigator.clipboard.writeText(code); alert("Script kopyalandı!"); }
     </script>
 </body>
 </html>
