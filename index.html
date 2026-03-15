@@ -86,7 +86,7 @@
             const { error } = await _supabase.auth.signUp({ email, password });
             
             if (error) document.getElementById('status-msg').innerText = "ERR: " + error.message;
-            else document.getElementById('status-msg').innerText = "SUCCESS: Kayıt tamam, giriş yapabilirsin.";
+            else document.getElementById('status-msg').innerText = "SUCCESS: Doğrulama linki e-posta adresinize gönderildi. Lütfen gelen kutunuzu (ve Spam klasörünü) kontrol edin.";
         }
 
         // Giriş İşlemi
