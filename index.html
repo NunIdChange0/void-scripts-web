@@ -3,32 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VOID KERNEL | Secure Access Panel</title>
+    <title>VOID_KERNEL | Elit Erişim Paneli</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00ff41; /* Neon Yeşil */
-            --primary-dim: rgba(0, 255, 65, 0.15);
-            --secondary: #bc13fe; /* Neon Mor */
-            --bg: #030303; /* Çok Koyu Gri */
-            --panel-bg: rgba(10, 10, 10, 0.85); /* Saydam Panel */
-            --text: #ffffff;
-            --text-dim: #888888;
-            --border: #1a1a1a;
-            --font-main: 'Fira Code', monospace;
-            --font-logo: 'Orbitron', sans-serif;
+            --bg: #000000; /* Mutlak Siyah */
+            --panel-bg: #080808; /* Çok Koyu Gri Panel */
+            --text: #ffffff; /* Saf Beyaz */
+            --text-dim: #666666; /* Soluk Gri */
+            --border: #1a1a1a; /* Keskin Sınır Çizgisi */
+            --accent: #ffffff; /* Aksan Rengi de Beyaz */
+            --font-main: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
         }
 
         * { box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(var(--primary-dim) 1px, transparent 1px),
-                radial-gradient(var(--primary-dim) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: 0 0, 25px 25px;
             color: var(--text);
             font-family: var(--font-main);
             margin: 0;
@@ -38,28 +31,28 @@
             overflow: hidden; /* Taşmaları engelle */
         }
 
-        /* Glitch Efekti Logoda */
+        /* Minimalist Logo */
         .logo {
             position: absolute;
-            top: 25px;
-            left: 30px;
-            font-family: var(--font-logo);
-            font-size: 1.8rem;
-            color: var(--primary);
-            font-weight: 900;
-            letter-spacing: 5px;
+            top: 30px;
+            left: 40px;
+            font-family: var(--font-main);
+            font-size: 1.4rem;
+            color: var(--text);
+            font-weight: 800;
+            letter-spacing: -1px; /* Harfleri birbirine yaklaştır */
             text-transform: uppercase;
-            text-shadow: 0 0 10px var(--primary);
-            animation: glitch 3s infinite;
         }
 
         .status {
             position: absolute;
-            top: 30px;
-            right: 30px;
-            font-size: 0.8rem;
+            top: 35px;
+            right: 40px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
             color: var(--text-dim);
             letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         /* Ana Konteyner */
@@ -72,171 +65,151 @@
             z-index: 10;
         }
 
-        /* Panellerin Ortak Stili (Glimmer Efekti ile) */
+        /* Panellerin Elit Stili */
         .panel {
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            border-radius: 4px; /* Hafif kavis, keskin his */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); /* Derinlik kat */
             position: relative;
             overflow: hidden;
         }
-        
-        .panel::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(transparent, var(--primary), transparent 30%);
-            animation: rotate 6s linear infinite;
-            z-index: -1;
-        }
 
         .panel-content {
-            background: var(--panel-bg);
-            padding: 50px;
-            border-radius: 7px; /* Kenarlık içeride kalsın */
+            padding: 60px;
         }
 
         /* Auth Paneli */
-        .auth-panel { width: 380px; text-align: center; }
-        .auth-panel h2 { font-family: var(--font-logo); font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 3px; color: var(--text); text-transform: uppercase; }
+        .auth-panel { width: 400px; text-align: center; }
+        .auth-panel h2 { font-weight: 700; font-size: 1.1rem; margin-bottom: 40px; letter-spacing: 1px; color: var(--text); text-transform: uppercase; }
         
         input {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             margin-bottom: 15px;
-            background: rgba(0,0,0,0.5);
+            background: transparent; /* Arka plan yok */
             border: 1px solid var(--border);
-            color: var(--primary);
+            color: var(--text);
             font-family: var(--font-main);
-            border-radius: 4px;
+            font-size: 0.9rem;
+            border-radius: 2px;
             outline: none;
-            transition: 0.3s;
+            transition: border-color 0.2s;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-dim); }
+        input:focus { border-color: var(--text); } /* Odaklanınca beyaz çerçeve */
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             font-family: var(--font-main);
             font-weight: 700;
             border: none;
-            border-radius: 4px;
+            border-radius: 2px;
             cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
+            margin-top: 15px;
+            transition: opacity 0.2s, background 0.2s;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
         }
-        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
-        .btn-primary:hover { background: #fff; box-shadow: 0 0 20px #fff; }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { opacity: 0.8; }
         
         .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
-        .btn-secondary:hover { border-color: var(--secondary); color: var(--secondary); text-shadow: 0 0 5px var(--secondary); }
+        .btn-secondary:hover { border-color: var(--text); color: var(--text); }
         
-        .msg { margin-top: 25px; font-size: 0.75rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 15px; }
+        .msg { margin-top: 30px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
         /* Gizli Script Paneli */
-        #script-panel { display: none; width: 90%; max-width: 1100px; }
-        .script-panel-content { padding: 40px; }
-        #script-panel h2 { font-family: var(--font-logo); color: var(--primary); text-shadow: 0 0 10px var(--primary); margin-bottom: 5px; }
-        .panel-subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 30px; }
+        #script-panel { display: none; width: 90%; max-width: 1200px; }
+        .script-panel-content { padding: 50px; }
+        #script-panel h2 { font-weight: 800; font-size: 1.5rem; color: var(--text); margin-bottom: 10px; text-transform: uppercase; letter-spacing: -1px; }
+        .panel-subtitle { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 40px; font-weight: 300; }
         
-        .script-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .script-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         
         .script-card {
-            background: rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.01); /* Çok hafif belirginlik */
             border: 1px solid var(--border);
-            padding: 25px;
-            border-radius: 6px;
-            transition: 0.3s;
+            padding: 30px;
+            border-radius: 2px;
+            transition: border-color 0.3s, transform 0.3s;
             position: relative;
         }
-        .script-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 5px 15px var(--primary-dim); }
+        .script-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
         
-        .script-card h3 { color: var(--primary); margin-top: 0; font-family: var(--font-main); font-size: 1.1rem; }
-        .script-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 25px; line-height: 1.5; }
+        .script-card h3 { color: var(--text); margin-top: 0; font-family: var(--font-mono); font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .script-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 30px; line-height: 1.6; font-weight: 300; }
         
         .script-card button {
             background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 15px;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 10px 20px;
             width: auto;
             margin-top: 0;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
         }
-        .script-card button:hover { background: var(--primary); color: #000; }
+        .script-card button:hover { border-color: var(--text); color: var(--text); }
         
         .logout-btn {
-            margin-top: 50px;
+            margin-top: 60px;
             background: transparent;
-            border: 1px solid #ff3333;
-            color: #ff3333;
+            border: 1px solid var(--border);
+            color: #ff3333; /* Çıkış butonu hala kırmızı kalsın */
             width: auto;
-            padding: 8px 20px;
-            font-size: 0.8rem;
+            padding: 10px 25px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
         }
-        .logout-btn:hover { background: #ff3333; color: #fff; box-shadow: 0 0 10px #ff3333; }
-
-        /* Animasyonlar */
-        @keyframes rotate { 100% { transform: rotate(1turn); } }
-        
-        @keyframes glitch {
-            0% { text-shadow: 0 0 10px var(--primary); }
-            1% { text-shadow: 2px 0 0 red, -2px 0 0 blue; }
-            2% { text-shadow: 0 0 10px var(--primary); }
-            98% { text-shadow: 0 0 10px var(--primary); }
-            99% { text-shadow: 2px 0 0 red, -2px 0 0 blue; }
-            100% { text-shadow: 0 0 10px var(--primary); }
-        }
+        .logout-btn:hover { border-color: #ff3333; background: #ff3333; color: #fff; }
 
     </style>
 </head>
 <body>
 
     <div class="logo">VOID_KERNEL</div>
-    <div class="status">SYS_STATUS: <span id="db-status" style="color: #ff3333;">OFFLINE</span></div>
+    <div class="status">SYSTEM_STATUS: <span id="db-status" style="color: #ff3333;">OFFLINE</span></div>
 
     <div class="main-container">
         <div class="panel auth-panel" id="auth-panel">
             <div class="panel-content">
-                <h2>>_ SECURE_LOGIN</h2>
+                <h2>>_ AUTHENTICATION_REQUIRED</h2>
                 <input type="email" id="email" placeholder="USER_EMAIL">
                 <input type="password" id="password" placeholder="ACCESS_KEY">
                 <button class="btn-primary" onclick="handleLogin()">LOGIN</button>
-                <button class="btn-secondary" onclick="handleRegister()">CREATE_ACCOUNT</button>
+                <button class="btn-secondary" onclick="handleRegister()">REQUEST_ACCESS</button>
                 <div id="status-msg" class="msg">>_ Awaiting credentials...</div>
             </div>
         </div>
 
         <div class="panel" id="script-panel">
             <div class="panel-content script-panel-content">
-                <h2>>_ EXECUTABLE_SCRIPTS</h2>
-                <p class="panel-subtitle">Yetkilendirme başarılı. Scriptleri sisteminize kopyalayabilirsiniz.</p>
+                <h2>>_ AUTHORIZED_RESOURCES</h2>
+                <p class="panel-subtitle">Yetkilendirme başarılı. Elit scriptler erişime açıldı.</p>
                 
                 <div class="script-grid">
                     <div class="script-card">
-                        <h3>Speed_Executor.lua</h3>
-                        <p>Karakter hız limitlerini bypass eder, sunucu taraflı kontrolleri atlatır.</p>
-                        <button onclick="copyScript('print(\'Speed Hack Active\')')">GET_CODE</button>
+                        <h3>NETWORK_EXECUTOR.lua</h3>
+                        <p>Ağ katmanındaki hız limitlerini ve paket kontrollerini devre dışı bırakır.</p>
+                        <button onclick="copyScript('print(\'Network Executor Active\')')">COPY_CODE</button>
                     </div>
 
                     <div class="script-card">
-                        <h3>Anti_AFK.lua</h3>
-                        <p>Sunucudan atılmayı engellemek için periyodik paketler gönderir.</p>
-                        <button onclick="copyScript('print(\'Anti-AFK Active\')')">GET_CODE</button>
+                        <h3>KERNEL_AFK_BYPASS.lua</h3>
+                        <p>Sistem seviyesindeki AFK algılama algoritmalarını simülasyon paketleriyle atlatır.</p>
+                        <button onclick="copyScript('print(\'Kernel AFK Bypass Active\')')">COPY_CODE</button>
                     </div>
                     
                     <div class="script-card">
-                        <h3>UI_Bypass.lua</h3>
-                        <p>Gizli yönetici panellerini ve kilitli arayüzleri açar.</p>
-                        <button onclick="copyScript('print(\'UI Bypass Active\')')">GET_CODE</button>
+                        <h3>SYSTEM_UI_DECRYPT.lua</h3>
+                        <p>Şifrelenmiş yönetici panellerini ve gizli sistem arayüzlerini deşifre eder.</p>
+                        <button onclick="copyScript('print(\'System UI Decrypt Active\')')">COPY_CODE</button>
                     </div>
                 </div>
 
-                <button class="logout-btn" onclick="handleLogout()">LOGOUT_SESSION</button>
+                <button class="logout-btn" onclick="handleLogout()">TERMINATE_SESSION</button>
             </div>
         </div>
     </div>
@@ -251,8 +224,7 @@
         // Bağlantı Kontrolü
         if(_supabase) {
             document.getElementById('db-status').innerText = 'ONLINE';
-            document.getElementById('db-status').style.color = '#00ff41';
-            document.getElementById('db-status').style.textShadow = '0 0 5px #00ff41';
+            document.getElementById('db-status').style.color = '#fff'; /* Online olunca beyaz yapalım */
         }
 
         // Kayıt İşlemi
@@ -285,7 +257,6 @@
                 document.getElementById('script-panel').style.display = 'block';
                 document.getElementById('db-status').innerText = "SESSION: " + data.user.email;
                 document.getElementById('db-status').style.color = "#fff";
-                document.getElementById('db-status').style.textShadow = "none";
             }
         }
 
