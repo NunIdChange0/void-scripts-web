@@ -1,35 +1,65 @@
-<script>
-    // 1. Bilgileri Tanımla
-    const SUPABASE_URL = 'https://nwgmvlnuycmuyxycjxzv.supabase.co';
-    const SUPABASE_KEY = 'BeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53Z212bG51eWNtdXl4eWNqeHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzY2MzcsImV4cCI6MjA4OTExMjYzN30.Ewdar4Gzw870VXofPj95tg_kKCizzS2gH3patBoZn_I';
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID KERNEL | Terminal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root { --primary: #00ff41; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: monospace; margin: 0; display: flex; flex-direction: column; height: 100vh; justify-content: center; align-items: center; }
+        .logo { position: absolute; top: 20px; left: 20px; font-size: 1.2rem; color: var(--primary); font-weight: bold; letter-spacing: 3px; }
+        .status { position: absolute; top: 20px; right: 20px; font-size: 0.8rem; color: #444; }
+        .auth-panel { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 40px; width: 320px; border-radius: 4px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #222; color: var(--primary); box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 12px; background: var(--primary); color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #fff; }
+        .msg { margin-top: 20px; font-size: 0.7rem; color: #555; }
+    </style>
+</head>
+<body>
 
-    // 2. Bağlantıyı Başlat (İsmi _supabase yaptım ki karışmasın)
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="logo">VOID_KERNEL</div>
+    <div class="status">SYSTEM: <span id="db-status">OFFLINE</span></div>
 
-    // 3. Bağlantı Kontrolü
-    if(_supabase) {
-        console.log("Bağlantı başarılı!");
-        document.getElementById('db-status').innerText = 'ONLINE';
-        document.getElementById('db-status').style.color = '#00ff41';
-    }
+    <div class="auth-panel">
+        <h2 style="font-size: 1rem; margin-bottom: 20px; letter-spacing: 2px;">SECURE_LOGIN</h2>
+        <input type="email" id="email" placeholder="USER_EMAIL">
+        <input type="password" id="password" placeholder="ACCESS_KEY">
+        <button onclick="handleLogin()">LOGIN</button>
+        <button onclick="handleRegister()" style="background:transparent; color:#fff; border:1px solid #333;">CREATE_ACCOUNT</button>
+        <div id="status-msg" class="msg">>_ Awaiting credentials...</div>
+    </div>
 
-    // Kayıt Fonksiyonu
-    async function handleRegister() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const { data, error } = await _supabase.auth.signUp({ email, password });
-        
-        if (error) { document.getElementById('status-msg').innerText = "HATA: " + error.message; }
-        else { document.getElementById('status-msg').innerText = "BAŞARILI: E-postanı kontrol et!"; }
-    }
+    <script>
+        // Bilgiler
+        const SUPABASE_URL = 'https://nwgmvlnuycmuyxycjxzv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53Z212bG51eWNtdXl4eWNqeHp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MzY2MzcsImV4cCI6MjA4OTExMjYzN30.Ewdar4Gzw870VXofPj95tg_kKCizzS2gH3patBoZn_I'; // Görseldeki o uzun key'i tırnak içine yapıştır
 
-    // Giriş Fonksiyonu
-    async function handleLogin() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+        // Bağlantıyı Başlat
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        if (error) { document.getElementById('status-msg').innerText = "HATA: " + error.message; }
-        else { document.getElementById('status-msg').innerText = "HOŞ GELDİN: " + data.user.email; }
-    }
-</script>
+        // Bağlantı Kontrolü (Hemen Çalışır)
+        if(_supabase) {
+            document.getElementById('db-status').innerText = 'ONLINE';
+            document.getElementById('db-status').style.color = '#00ff41';
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = await _supabase.auth.signUp({ email, password });
+            if (error) document.getElementById('status-msg').innerText = "ERR: " + error.message;
+            else document.getElementById('status-msg').innerText = "SUCCESS: Check your inbox.";
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) document.getElementById('status-msg').innerText = "ERR: " + error.message;
+            else document.getElementById('status-msg').innerText = "WELCOME: " + data.user.email;
+        }
+    </script>
+</body>
+</html>
