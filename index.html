@@ -289,6 +289,20 @@
                 alert("DIKKAT: Sunucuya ulaşılamıyor. Sertifikayı onayladığından veya 5000 portunun açık olduğundan emin ol kanka!");
             }
         }
+
+        document.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        // Eğer Login formu görünürse login yap, değilse register yap
+        const isLoginVisible = document.getElementById('login-form').style.display !== 'none';
+        
+        if (isLoginVisible) {
+            handleAuth('login');
+        } else {
+            handleAuth('register');
+        }
+    }
+});
+
     </script>
 </body>
 </html>
