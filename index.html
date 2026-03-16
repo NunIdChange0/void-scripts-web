@@ -17,9 +17,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; height: 100vh; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* Neural Network Canvas */
         #canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1; pointer-events: none;
@@ -30,7 +29,7 @@
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: 5px; color: #fff; text-decoration: none; text-shadow: 0 0 10px var(--accent); }
         .logo span { color: var(--accent); }
 
-        .container { height: 80vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; }
+        .container { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; }
 
         .auth-card {
             background: var(--card-bg); border: 1px solid var(--border);
@@ -41,15 +40,6 @@
         }
 
         h2 { font-size: 1.6rem; margin-bottom: 25px; font-weight: 800; letter-spacing: 1px; }
-        h2 span { color: var(--accent); }
-
-        .input-group { margin-bottom: 15px; }
-        input {
-            width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border);
-            border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
-        }
-        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 20px var(--shadow); }
-
         .btn-main {
             width: 100%; padding: 14px; background: var(--accent); color: #fff;
             border: none; border-radius: 8px; font-weight: 700; cursor: pointer;
@@ -57,18 +47,33 @@
         }
         .btn-main:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--accent); background: #b030ff; }
 
-        .switch-auth { margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
-        .switch-auth b { color: var(--accent); cursor: pointer; }
+        input {
+            width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border);
+            border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; margin-bottom: 15px;
+        }
+        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 20px var(--shadow); }
 
+        /* Main Panel */
         #main-panel { display: none; padding: 0 60px 60px 60px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 10; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 40px; }
-        
         .s-card {
             background: var(--card-bg); border: 1px solid var(--border); padding: 30px;
-            border-radius: 12px; position: relative; overflow: hidden; backdrop-filter: blur(10px);
+            border-radius: 12px; position: relative; backdrop-filter: blur(10px);
         }
-        .s-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 0 20px var(--shadow); }
 
+        /* Footer */
+        footer {
+            padding: 40px 60px; text-align: center; position: relative; z-index: 10;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        }
+        .credits {
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim);
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+        .credits span { color: var(--accent); font-weight: bold; text-shadow: 0 0 5px var(--accent); }
+
+        .switch-auth { margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
+        .switch-auth b { color: var(--accent); cursor: pointer; }
         .status-msg { margin-top: 15px; font-size: 0.8rem; text-align: center; min-height: 1.2rem; }
     </style>
 </head>
@@ -79,15 +84,15 @@
         <a href="/" class="logo">VOID<span>.</span></a>
         <div id="user-nav" style="display: none;">
             <span id="nav-nick" style="margin-right: 20px; color: var(--accent); font-weight: bold;"></span>
-            <b onclick="location.reload()" style="color: #ff4444; cursor: pointer; font-size: 0.9rem; text-transform: uppercase;">Logout</b>
+            <b onclick="location.reload()" style="color: #ff4444; cursor: pointer; font-size: 0.9rem;">LOGOUT</b>
         </div>
     </nav>
 
     <div class="container" id="auth-container">
         <div class="auth-card" id="login-form">
             <h2>LOGIN<span>.</span></h2>
-            <div class="input-group"><input type="email" id="login-email" placeholder="Email Address"></div>
-            <div class="input-group"><input type="password" id="login-pass" placeholder="Password"></div>
+            <input type="email" id="login-email" placeholder="Email Address">
+            <input type="password" id="login-pass" placeholder="Password">
             <button class="btn-main" onclick="handleAuth('login')">Initialize</button>
             <div class="switch-auth">New here? <b onclick="toggleAuth()">Create Access</b></div>
             <div id="login-status" class="status-msg"></div>
@@ -95,9 +100,9 @@
 
         <div class="auth-card" id="register-form" style="display: none;">
             <h2>REGISTER<span>.</span></h2>
-            <div class="input-group"><input type="text" id="reg-nick" placeholder="Nickname"></div>
-            <div class="input-group"><input type="email" id="reg-email" placeholder="Email Address"></div>
-            <div class="input-group"><input type="password" id="reg-pass" placeholder="Password"></div>
+            <input type="text" id="reg-nick" placeholder="Nickname">
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <input type="password" id="reg-pass" placeholder="Password">
             <button class="btn-main" onclick="handleAuth('register')">Establish Identity</button>
             <div class="switch-auth">Recognized user? <b onclick="toggleAuth()">Sign In</b></div>
             <div id="reg-status" class="status-msg"></div>
@@ -106,7 +111,7 @@
 
     <div id="main-panel">
         <h1 style="font-size: 2.5rem; font-weight: 800;">VAULT <span style="color: var(--accent)">SYSTEM</span></h1>
-        <div class="grid" id="script-list">
+        <div class="grid">
             <div class="s-card">
                 <h3 style="color: var(--accent);">Universal Aimbot</h3>
                 <p style="color: var(--text-dim); font-size: 0.85rem; margin: 15px 0;">Advanced bone tracking algorithms. Zero latency.</p>
@@ -120,77 +125,51 @@
         </div>
     </div>
 
+    <footer>
+        <div class="credits">MADE BY <span>ERENVEIN</span> & <span>NUNIDCHANGE</span></div>
+    </footer>
+
     <script>
-        // --- NEURAL NETWORK EFFECT ---
+        // --- NEURAL NETWORK EFFECT (As specified before) ---
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        const mouse = { x: null, y: null, radius: 150 };
-
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-        window.addEventListener('resize', () => { init(); });
-
-        class Particle {
-            constructor(x, y, dx, dy, size) {
-                this.x = x; this.y = y; this.dx = dx; this.dy = dy; this.size = size;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = '#a020f0';
-                ctx.fill();
-            }
-            update() {
-                if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
-                if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
-                this.x += this.dx; this.y += this.dy;
-                this.draw();
-            }
-        }
-
         function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = [];
             let numberOfParticles = (canvas.height * canvas.width) / 9000;
             for (let i = 0; i < numberOfParticles; i++) {
                 let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let x = (Math.random() * (innerWidth - size * 2) + size * 2);
+                let y = (Math.random() * (innerHeight - size * 2) + size * 2);
                 let dx = (Math.random() * 1) - 0.5;
                 let dy = (Math.random() * 1) - 0.5;
-                particles.push(new Particle(x, y, dx, dy, size));
+                particles.push({x, y, dx, dy, size});
             }
         }
-
-        function connect() {
-            let opacityValue = 1;
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            particles.forEach(p => {
+                if (p.x > canvas.width || p.x < 0) p.dx = -p.dx;
+                if (p.y > canvas.height || p.y < 0) p.dy = -p.dy;
+                p.x += p.dx; p.y += p.dy;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#a020f0'; ctx.fill();
+            });
             for (let a = 0; a < particles.length; a++) {
                 for (let b = a; b < particles.length; b++) {
-                    let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
-                                 + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                    let distance = ((particles[a].x - particles[b].x) ** 2) + ((particles[a].y - particles[b].y) ** 2);
                     if (distance < (canvas.width / 7) * (canvas.height / 7)) {
-                        opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = `rgba(160, 32, 240, ${opacityValue})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(160, 32, 240, ${1 - distance / 20000})`;
+                        ctx.lineWidth = 1; ctx.beginPath();
                         ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
+                        ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke();
                     }
                 }
             }
         }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
-            particles.forEach(p => p.update());
-            connect();
-        }
-
-        init();
-        animate();
+        init(); animate(); window.addEventListener('resize', init);
 
         // --- AUTH & SYSTEM LOGIC ---
         function toggleAuth() {
@@ -199,28 +178,25 @@
             login.style.display = login.style.display === 'none' ? 'block' : 'none';
             reg.style.display = reg.style.display === 'none' ? 'block' : 'none';
         }
-
         function copy(text) {
             navigator.clipboard.writeText(text);
             alert("ACCESS GRANTED: Script Copied.");
         }
-
         async function handleAuth(type) {
             const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
             statusDiv.innerText = "Connecting to Secure Server...";
-            
             if(type === 'login') {
                 setTimeout(() => {
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('main-panel').style.display = 'block';
                     document.getElementById('user-nav').style.display = 'block';
-                    document.getElementById('nav-nick').innerText = "SYSTEM_USER_01";
-                }, 1200);
+                    document.getElementById('nav-nick').innerText = "SYSTEM_USER";
+                }, 1000);
             } else {
                 setTimeout(() => {
                     statusDiv.style.color = "var(--accent)";
-                    statusDiv.innerText = "Identity established. You may now initialize.";
-                }, 1200);
+                    statusDiv.innerText = "Identity established.";
+                }, 1000);
             }
         }
     </script>
