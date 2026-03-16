@@ -104,19 +104,6 @@
         .switch-auth { margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
         .switch-auth b { color: var(--accent); cursor: pointer; }
         .status-msg { margin-top: 15px; font-size: 0.8rem; text-align: center; min-height: 1.2rem; font-weight: bold; }
-        
-        /* Admin Etiketi Stili */
-        .admin-tag {
-            color: #ff4444; 
-            font-size: 10px; 
-            border: 1px solid #ff4444; 
-            padding: 2px 5px; 
-            margin-left: 8px; 
-            border-radius: 4px; 
-            font-weight: 800; 
-            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
-            vertical-align: middle;
-        }
     </style>
 </head>
 <body>
@@ -162,12 +149,6 @@
 
     <div id="main-panel">
         <h1 style="font-size: 2.5rem; font-weight: 800;">VAULT <span style="color: var(--accent)">SYSTEM</span></h1>
-        
-        <div id="admin-tools" style="display: none; margin-top: 20px; padding: 15px; border: 1px dashed #ff4444; border-radius: 8px;">
-            <h4 style="color: #ff4444; font-size: 0.8rem; margin-bottom: 10px;">ADMIN PRIVILEGES ACTIVE</h4>
-            <button class="btn-main" style="width: auto; padding: 8px 15px; font-size: 0.7rem; background: #ff4444;">MANAGE USERS</button>
-        </div>
-
         <div class="grid">
             <div class="s-card">
                 <h3 style="color: var(--accent);">Universal Aimbot</h3>
@@ -217,7 +198,7 @@
     </script>
 
     <script>
-        // --- Shader Engine ---
+        // Shader Engine
         const canvas = document.getElementById('canvas');
         const gl = canvas.getContext('webgl');
         function createShader(gl, type, source) {
@@ -242,7 +223,7 @@
         }
         requestAnimationFrame(render);
 
-        // --- UI Logic ---
+        // UI Logic
         function toggleAuth() {
             const login = document.getElementById('login-form');
             const reg = document.getElementById('register-form');
@@ -252,7 +233,7 @@
 
         function copy(text) { navigator.clipboard.writeText(text); alert("ACCESS GRANTED: Script Copied."); }
 
-        // --- Auth Logic (Backend Logic) ---
+        // --- AUTH LOGIC ---
         async function handleAuth(type) {
             const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
             const emailInput = document.getElementById(type === 'login' ? 'login-email' : 'reg-email');
@@ -269,6 +250,7 @@
             statusDiv.innerText = "Connecting to Vault...";
 
             try {
+                // Backend 5000 portunda çalışıyor
                 const API_URL = "https://api.voidscripts.org:5000/api"; 
                 const response = await fetch(`${API_URL}/${type}`, {
                     method: 'POST',
@@ -291,18 +273,7 @@
                             document.getElementById('auth-container').style.display = 'none';
                             document.getElementById('main-panel').style.display = 'block';
                             document.getElementById('user-nav').style.display = 'block';
-                            
-                            const navNick = document.getElementById('nav-nick');
-                            
-                            // ADMIN KONTROLÜ
-                            if (data.role === 'admin') {
-                                navNick.innerHTML = `${data.nickname} <span class="admin-tag">ADMIN</span>`;
-                                // Adminlere özel araçları göster
-                                const adminTools = document.getElementById('admin-tools');
-                                if(adminTools) adminTools.style.display = 'block';
-                            } else {
-                                navNick.innerText = data.nickname;
-                            }
+                            document.getElementById('nav-nick').innerText = data.nickname;
                         }, 800);
                     } else {
                         setTimeout(() => toggleAuth(), 2000);
@@ -315,18 +286,23 @@
                 console.error("Fetch Error:", err);
                 statusDiv.style.color = "#ff4444";
                 statusDiv.innerText = "GATEWAY TIMEOUT.";
-                alert("DIKKAT: Sunucuya ulaşılamıyor. 5000 portunu kontrol et kanka!");
+                alert("DIKKAT: Sunucuya ulaşılamıyor. Sertifikayı onayladığından veya 5000 portunun açık olduğundan emin ol kanka!");
             }
         }
 
-        // Enter Key Listener
         document.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const isLoginVisible = document.getElementById('login-form').style.display !== 'none';
-                if (isLoginVisible) handleAuth('login');
-                else handleAuth('register');
-            }
-        });
+    if (e.key === 'Enter') {
+        // Eğer Login formu görünürse login yap, değilse register yap
+        const isLoginVisible = document.getElementById('login-form').style.display !== 'none';
+        
+        if (isLoginVisible) {
+            handleAuth('login');
+        } else {
+            handleAuth('register');
+        }
+    }
+});
+
     </script>
 </body>
 </html>
