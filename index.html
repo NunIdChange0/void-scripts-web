@@ -269,15 +269,21 @@
                     statusDiv.innerText = type === 'login' ? "Access Granted." : "Identity Established.";
                     
                     if(type === 'login') {
-                        setTimeout(() => {
-                            document.getElementById('auth-container').style.display = 'none';
-                            document.getElementById('main-panel').style.display = 'block';
-                            document.getElementById('user-nav').style.display = 'block';
-                            document.getElementById('nav-nick').innerText = data.nickname;
-                        }, 800);
-                    } else {
-                        setTimeout(() => toggleAuth(), 2000);
-                    }
+    setTimeout(() => {
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('main-panel').style.display = 'block';
+        document.getElementById('user-nav').style.display = 'block';
+        
+        const navNick = document.getElementById('nav-nick');
+        
+        // Eğer role verisi gelmese bile patlamaz, sadece ismi yazar
+        if (data.role && data.role === 'admin') {
+            navNick.innerHTML = `${data.nickname} <span class="admin-tag">ADMIN</span>`;
+        } else {
+            navNick.innerText = data.nickname || "User";
+        }
+    }, 800);
+}
                 } else {
                     statusDiv.style.color = "#ff4444";
                     statusDiv.innerText = data.error || "Access Denied.";
