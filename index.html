@@ -114,57 +114,57 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
-    /* --- DISCORD FLOATING BUTTON --- */
-    .discord-btn {
-        position: fixed;
-        bottom: 30px;
-        right: 40px;
-        width: 60px;
-        height: 60px;
-        background: rgba(160, 32, 240, 0.2);
-        border: 1px solid var(--border);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-decoration: none;
-        font-size: 1.8rem;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        transition: all 0.4s ease;
-    }
+/* --- DISCORD FLOATING BUTTON (EN ÜSTE ALINDI) --- */
+.discord-btn {
+    position: fixed;
+    top: 35px;           /* Sayfanın en tepesinden boşluk */
+    right: 60px;          /* Sağ kenardan boşluk (Navbar hizasıyla aynı) */
+    width: 45px;          /* Navbar'da daha zarif durması için biraz küçülttük */
+    height: 45px;
+    background: rgba(160, 32, 240, 0.15);
+    border: 1px solid rgba(160, 32, 240, 0.3);
+    border-radius: 10px;  /* Modern, hafif yuvarlatılmış kare form */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    font-size: 1.4rem;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-    .discord-btn:hover {
-        transform: scale(1.1) rotate(5deg);
-        background: var(--accent);
-        box-shadow: 0 0 30px var(--accent);
-        color: #fff;
-    }
+.discord-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    background: var(--accent);
+    box-shadow: 0 0 25px var(--accent);
+    color: #fff;
+}
 
-    /* Tooltip (Üzerine gelince yazı çıksın) */
-    .discord-btn::before {
-        content: 'JOIN DISCORD';
-        position: absolute;
-        right: 80px;
-        background: var(--card-bg);
-        padding: 8px 15px;
-        border-radius: 5px;
-        font-size: 0.7rem;
-        font-weight: bold;
-        letter-spacing: 1px;
-        opacity: 0;
-        pointer-events: none;
-        transition: 0.3s;
-        border: 1px solid var(--border);
-        white-space: nowrap;
-    }
+/* Tooltip - Yazıyı butonun altına veya soluna alabiliriz */
+.discord-btn::before {
+    content: 'JOIN DISCORD';
+    position: absolute;
+    top: 55px;           /* Butonun hemen altında görünmesi için */
+    right: 0;
+    background: var(--card-bg);
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+}
 
-    .discord-btn:hover::before {
-        opacity: 1;
-        right: 70px;
-    }
+.discord-btn:hover::before {
+    opacity: 1;
+    top: 50px;
+}
 </style>
 
 <a href="https://discord.gg/PW5s2vP3Yc" target="_blank" class="discord-btn">
