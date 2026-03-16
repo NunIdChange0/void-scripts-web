@@ -17,24 +17,33 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; height: 100vh; }
 
+        /* Background Grid */
         .grid-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: radial-gradient(circle at 2px 2px, #111 1px, transparent 0);
-            background-size: 40px 40px; z-index: -1;
+            background-size: 40px 40px; z-index: -2;
         }
 
-        .navbar { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; }
+        /* Mouse Effect Canvas */
+        #canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+
+        .navbar { padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 10; }
         .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: 5px; color: #fff; text-decoration: none; }
         .logo span { color: var(--accent); }
 
-        .container { height: 85vh; display: flex; align-items: center; justify-content: center; }
+        .container { height: 80vh; display: flex; align-items: center; justify-content: center; position: relative; z-index: 10; }
 
+        /* Auth Card */
         .auth-card {
             background: var(--card-bg); border: 1px solid var(--border);
             padding: 40px; width: 400px; border-radius: 12px;
             box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
         }
 
         h2 { font-size: 1.6rem; margin-bottom: 25px; font-weight: 800; }
@@ -52,19 +61,18 @@
             border: none; border-radius: 8px; font-weight: 700; cursor: pointer;
             margin-top: 10px; font-size: 1rem;
         }
-        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--shadow); }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 20px var(--shadow); background: #b030ff; }
 
-        .switch-auth {
-            margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem;
-        }
+        .switch-auth { margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
         .switch-auth b { color: var(--accent); cursor: pointer; }
 
-        #main-panel { display: none; padding: 0 60px 60px 60px; max-width: 1400px; margin: 0 auto; }
+        /* Main Panel */
+        #main-panel { display: none; padding: 0 60px 60px 60px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 10; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 40px; }
         
         .s-card {
             background: var(--card-bg); border: 1px solid var(--border); padding: 30px;
-            border-radius: 12px; position: relative;
+            border-radius: 12px; position: relative; overflow: hidden;
         }
         .s-card:hover { border-color: var(--accent); transform: translateY(-5px); }
 
@@ -73,6 +81,7 @@
 </head>
 <body>
     <div class="grid-bg"></div>
+    <canvas id="canvas"></canvas>
 
     <nav class="navbar">
         <a href="/" class="logo">VOID<span>.</span></a>
@@ -105,57 +114,106 @@
 
     <div id="main-panel">
         <h1 style="font-size: 2.5rem; font-weight: 800;">Script <span style="color: var(--accent)">Library</span></h1>
-        <p style="color: var(--text-dim); margin-top: 10px;">The most advanced and optimized scripts at your disposal.</p>
+        <p style="color: var(--text-dim); margin-top: 10px;">Advanced and undetected scripts for your experience.</p>
         <div class="grid" id="script-list">
             <div class="s-card">
                 <h3>Universal Aimbot</h3>
-                <p style="color: var(--text-dim); font-size: 0.85rem; margin: 15px 0;">Premium bone tracking and smooth aim assistance for all FPS titles.</p>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin: 15px 0;">Bone tracking and smoothing for all major FPS games.</p>
                 <button class="btn-main" style="padding: 10px;" onclick="copy('loadstring(game:HttpGet(\'https://api.voidscripts.org/aimbot\'))()')">Copy Code</button>
             </div>
             <div class="s-card">
-                <h3>ESP & Wallhack</h3>
-                <p style="color: var(--text-dim); font-size: 0.85rem; margin: 15px 0;">High performance distance ESP and box visualization. Fully undetected.</p>
+                <h3>ESP & Visuals</h3>
+                <p style="color: var(--text-dim); font-size: 0.85rem; margin: 15px 0;">Box ESP, Snaplines, and Distance visualization.</p>
                 <button class="btn-main" style="padding: 10px;" onclick="copy('loadstring(game:HttpGet(\'https://api.voidscripts.org/esp\'))()')">Copy Code</button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://api.voidscripts.org";
+        // MOUSE EFFECT CODE
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 1;
+                this.speedX = Math.random() * 1.5 - 0.75;
+                this.speedY = Math.random() * 1.5 - 0.75;
+                this.color = 'rgba(160, 32, 240, 0.6)';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.1) this.size -= 0.05;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 2; i++) {
+                particles.push(new Particle(e.x, e.y));
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].size <= 0.1) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // AUTH LOGIC
         function toggleAuth() {
             const login = document.getElementById('login-form');
             const reg = document.getElementById('register-form');
-            if(login.style.display === 'none') {
-                login.style.display = 'block'; reg.style.display = 'none';
-            } else {
-                login.style.display = 'none'; reg.style.display = 'block';
-            }
+            login.style.display = login.style.display === 'none' ? 'block' : 'none';
+            reg.style.display = reg.style.display === 'none' ? 'block' : 'none';
         }
 
         function copy(text) {
             navigator.clipboard.writeText(text);
-            alert("Script copied to clipboard!");
+            alert("Script copied!");
         }
 
         async function handleAuth(type) {
-            const statusId = type === 'login' ? 'login-status' : 'reg-status';
-            const statusDiv = document.getElementById(statusId);
-            statusDiv.innerText = type === 'login' ? "Authenticating..." : "Creating account...";
-
-            // Demo logic
+            const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
+            statusDiv.innerText = "Processing...";
+            
+            // Backend connection will go here
             if(type === 'login') {
                 setTimeout(() => {
                     document.getElementById('auth-container').style.display = 'none';
                     document.getElementById('main-panel').style.display = 'block';
                     document.getElementById('user-nav').style.display = 'block';
-                    document.getElementById('nav-nick').innerText = "Welcome back!";
-                }, 1000);
+                    document.getElementById('nav-nick').innerText = "Logged in";
+                }, 800);
             } else {
                 setTimeout(() => {
                     statusDiv.style.color = "var(--accent)";
-                    statusDiv.innerText = "Account created! Please sign in.";
-                }, 1000);
+                    statusDiv.innerText = "Account ready! Please login.";
+                }, 800);
             }
         }
     </script>
