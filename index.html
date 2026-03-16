@@ -262,68 +262,71 @@
         function copy(text) { navigator.clipboard.writeText(text); alert("ACCESS GRANTED: Script Copied."); }
 
         async function handleAuth(type) {
-            const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
-            const emailInput = document.getElementById(type === 'login' ? 'login-email' : 'reg-email');
-            const passInput = document.getElementById(type === 'login' ? 'login-pass' : 'reg-pass');
-            const nickInput = type === 'register' ? document.getElementById('reg-nick') : null;
+    const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
+    const emailInput = document.getElementById(type === 'login' ? 'login-email' : 'reg-email');
+    const passInput = document.getElementById(type === 'login' ? 'login-pass' : 'reg-pass');
+    const nickInput = type === 'register' ? document.getElementById('reg-nick') : null;
 
-            if(!emailInput.value || !passInput.value) {
-                statusDiv.style.color = "#ff4444";
-                statusDiv.innerText = "Please fill all fields.";
-                return;
-            }
+    if(!emailInput.value || !passInput.value) {
+        statusDiv.style.color = "#ff4444";
+        statusDiv.innerText = "Please fill all fields.";
+        return;
+    }
 
-            statusDiv.style.color = "var(--text-dim)";
-            statusDiv.innerText = "Connecting to Vault...";
+    statusDiv.style.color = "var(--text-dim)";
+    statusDiv.innerText = "Connecting to Vault...";
 
-            try {
-                const API_URL = "https://api.voidscripts.org:5000/api"; 
-                const response = await fetch(`${API_URL}/${type}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email: emailInput.value, 
-                        password: passInput.value, 
-                        nickname: nickInput ? nickInput.value : null 
-                    })
-                });
+    try {
+        const API_URL = "https://api.voidscripts.org:5000/api"; 
+        const response = await fetch(`${API_URL}/${type}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                email: emailInput.value, 
+                password: passInput.value, 
+                nickname: nickInput ? nickInput.value : null 
+            })
+        });
 
-                const data = await response.json();
+        const data = await response.json();
+        console.log("Sunucudan Gelen Ham Veri:", data); // KRİTİK: Burası veriyi konsola basar
 
-                if (response.ok) {
-                    statusDiv.style.color = "var(--success)";
-                    statusDiv.innerText = type === 'login' ? "Access Granted." : "Identity Established.";
+        if (response.ok) {
+            statusDiv.style.color = "var(--success)";
+            statusDiv.innerText = type === 'login' ? "Access Granted." : "Identity Established.";
+            
+            if(type === 'login') {
+                setTimeout(() => {
+                    document.getElementById('auth-container').style.display = 'none';
+                    document.getElementById('main-panel').style.display = 'block';
+                    document.getElementById('user-nav').style.display = 'block';
                     
-                    if(type === 'login') {
-                        setTimeout(() => {
-                            document.getElementById('auth-container').style.display = 'none';
-                            document.getElementById('main-panel').style.display = 'block';
-                            document.getElementById('user-nav').style.display = 'block';
-                            
-                            const navNick = document.getElementById('nav-nick');
-                            const adminTools = document.getElementById('admin-tools');
-                            
-                            // ADMIN CHECK & TAG INJECTION
-                            if (data.role && data.role === 'admin') {
-                                navNick.innerHTML = `${data.nickname} <span class="admin-tag">ADMIN</span>`;
-                                adminTools.style.display = 'block'; // Show admin panel
-                            } else {
-                                navNick.innerText = data.nickname || "User";
-                                adminTools.style.display = 'none';
-                            }
-                        }, 800);
+                    const navNick = document.getElementById('nav-nick');
+                    const adminTools = document.getElementById('admin-tools');
+                    
+                    // ADMIN KONTROLÜ (Garantili Versiyon)
+                    if (data.role === 'admin') {
+                        navNick.innerHTML = `${data.nickname} <span class="admin-tag">ADMIN</span>`;
+                        if(adminTools) adminTools.style.display = 'block';
+                        console.log("Admin yetkileri tanımlandı.");
                     } else {
-                        setTimeout(() => toggleAuth(), 2000);
+                        navNick.innerText = data.nickname || "User";
+                        if(adminTools) adminTools.style.display = 'none';
                     }
-                } else {
-                    statusDiv.style.color = "#ff4444";
-                    statusDiv.innerText = data.error || "Access Denied.";
-                }
-            } catch (err) {
-                statusDiv.style.color = "#ff4444";
-                statusDiv.innerText = "GATEWAY TIMEOUT.";
+                }, 800);
+            } else {
+                setTimeout(() => toggleAuth(), 2000);
             }
+        } else {
+            statusDiv.style.color = "#ff4444";
+            statusDiv.innerText = data.error || "Access Denied.";
         }
+    } catch (err) {
+        console.error("Bağlantı Hatası:", err);
+        statusDiv.style.color = "#ff4444";
+        statusDiv.innerText = "GATEWAY TIMEOUT.";
+    }
+}
 
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
