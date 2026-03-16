@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID | Premium Script Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --bg: #000000;
@@ -17,30 +18,25 @@
             --shadow: rgba(160, 32, 240, 0.3);
         }
 
-        /* Sayfa Geneli Temizlik */
         * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         
         body { 
             background-color: var(--bg); 
             color: var(--text-main); 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            overflow: hidden; /* Çizgi oluşmasını engellemek için kaydırmayı kilitledik */
+            overflow-x: hidden;
             min-height: 100vh; 
             display: flex; 
             flex-direction: column;
             position: relative;
         }
 
-        /* --- ARKA PLAN (Tam Ekran Fixlendi) --- */
         #canvas {
             position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh; 
             z-index: -1; 
             pointer-events: none;
-            display: block; 
             background: #000;
         }
 
@@ -55,7 +51,6 @@
             padding: 40px; width: 400px; border-radius: 12px;
             box-shadow: 0 10px 50px rgba(0,0,0,0.9);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(160, 32, 240, 0.2);
         }
 
         h2 { font-size: 1.6rem; margin-bottom: 25px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
@@ -64,7 +59,6 @@
             width: 100%; padding: 14px; background: var(--accent); color: #fff;
             border: none; border-radius: 8px; font-weight: 700; cursor: pointer;
             margin-top: 10px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(160, 32, 240, 0.4);
         }
         .btn-main:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--accent); background: #b030ff; }
 
@@ -77,7 +71,7 @@
         .system-status {
             position: fixed; bottom: 30px; left: 40px; display: flex; align-items: center;
             font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
-            letter-spacing: 1px; z-index: 100; opacity: 0.7;
+            z-index: 100;
         }
         .status-dot {
             width: 8px; height: 8px; background-color: var(--success); border-radius: 50%;
@@ -86,91 +80,31 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.7; }
         }
 
         #main-panel { display: none; padding: 0 60px 60px 60px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 10; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 40px; }
         .s-card { background: var(--card-bg); border: 1px solid var(--border); padding: 30px; border-radius: 12px; backdrop-filter: blur(10px); }
 
-        footer {
-            padding: 40px 60px; text-align: center; position: relative; z-index: 10;
-            margin-top: auto; /* Sayfanın altına yapıştırır */
-            margin-bottom: 20px; /* Credits'i biraz yukarı çektik */
+        .discord-btn {
+            position: fixed; top: 35px; right: 60px; width: 45px; height: 45px;
+            background: rgba(160, 32, 240, 0.15); border: 1px solid rgba(160, 32, 240, 0.3);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none; font-size: 1.4rem; z-index: 1000;
+            backdrop-filter: blur(10px);
         }
-        .credits {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
-            letter-spacing: 2px; text-transform: uppercase; opacity: 1;
-        }
-        .credits span { color: var(--accent); font-weight: bold; text-shadow: 0 0 5px var(--accent); }
+
+        footer { padding: 40px 60px; text-align: center; position: relative; z-index: 10; margin-top: auto; }
+        .credits { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; }
+        .credits span { color: var(--accent); }
 
         .switch-auth { margin-top: 20px; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
         .switch-auth b { color: var(--accent); cursor: pointer; }
-        .status-msg { margin-top: 15px; font-size: 0.8rem; text-align: center; min-height: 1.2rem; }
+        .status-msg { margin-top: 15px; font-size: 0.8rem; text-align: center; min-height: 1.2rem; font-weight: bold; }
     </style>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<style>
-/* --- DISCORD FLOATING BUTTON (EN ÜSTE ALINDI) --- */
-.discord-btn {
-    position: fixed;
-    top: 35px;           /* Sayfanın en tepesinden boşluk */
-    right: 60px;          /* Sağ kenardan boşluk (Navbar hizasıyla aynı) */
-    width: 45px;          /* Navbar'da daha zarif durması için biraz küçülttük */
-    height: 45px;
-    background: rgba(160, 32, 240, 0.15);
-    border: 1px solid rgba(160, 32, 240, 0.3);
-    border-radius: 10px;  /* Modern, hafif yuvarlatılmış kare form */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-decoration: none;
-    font-size: 1.4rem;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.discord-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    background: var(--accent);
-    box-shadow: 0 0 25px var(--accent);
-    color: #fff;
-}
-
-/* Tooltip - Yazıyı butonun altına veya soluna alabiliriz */
-.discord-btn::before {
-    content: 'JOIN DISCORD';
-    position: absolute;
-    top: 55px;           /* Butonun hemen altında görünmesi için */
-    right: 0;
-    background: var(--card-bg);
-    padding: 6px 12px;
-    border-radius: 5px;
-    font-size: 0.65rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s;
-    border: 1px solid var(--border);
-    white-space: nowrap;
-}
-
-.discord-btn:hover::before {
-    opacity: 1;
-    top: 50px;
-}
-</style>
-
-<a href="https://discord.gg/PW5s2vP3Yc" target="_blank" class="discord-btn">
-    <i class="fab fa-discord"></i>
-</a>
-
 </head>
 <body>
     <canvas id="canvas"></canvas>
@@ -179,6 +113,10 @@
         <div class="status-dot"></div>
         SYSTEM OPERATIONAL
     </div>
+
+    <a href="https://discord.gg/PW5s2vP3Yc" target="_blank" class="discord-btn">
+        <i class="fab fa-discord"></i>
+    </a>
 
     <nav class="navbar">
         <a href="/" class="logo">VOID<span>.</span></a>
@@ -260,6 +198,7 @@
     </script>
 
     <script>
+        // Shader Engine
         const canvas = document.getElementById('canvas');
         const gl = canvas.getContext('webgl');
         function createShader(gl, type, source) {
@@ -276,18 +215,15 @@
         gl.enableVertexAttribArray(posLoc); gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
         const tLoc = gl.getUniformLocation(program, 'u_time');
         const rLoc = gl.getUniformLocation(program, 'u_resolution');
-        
         function render(time) {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            gl.viewport(0, 0, canvas.width, canvas.height);
-            gl.useProgram(program);
-            gl.uniform1f(tLoc, time * 0.001);
-            gl.uniform2f(rLoc, canvas.width, canvas.height);
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-            requestAnimationFrame(render);
+            gl.viewport(0, 0, canvas.width, canvas.height); gl.useProgram(program);
+            gl.uniform1f(tLoc, time * 0.001); gl.uniform2f(rLoc, canvas.width, canvas.height);
+            gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render);
         }
         requestAnimationFrame(render);
 
+        // UI Logic
         function toggleAuth() {
             const login = document.getElementById('login-form');
             const reg = document.getElementById('register-form');
@@ -297,16 +233,60 @@
 
         function copy(text) { navigator.clipboard.writeText(text); alert("ACCESS GRANTED: Script Copied."); }
 
+        // --- AUTH LOGIC (DÜZENLENMİŞ) ---
         async function handleAuth(type) {
             const statusDiv = document.getElementById(type === 'login' ? 'login-status' : 'reg-status');
+            const emailInput = document.getElementById(type === 'login' ? 'login-email' : 'reg-email');
+            const passInput = document.getElementById(type === 'login' ? 'login-pass' : 'reg-pass');
+            const nickInput = type === 'register' ? document.getElementById('reg-nick') : null;
+
+            if(!emailInput.value || !passInput.value) {
+                statusDiv.style.color = "#ff4444";
+                statusDiv.innerText = "Please fill all fields.";
+                return;
+            }
+
+            statusDiv.style.color = "var(--text-dim)";
             statusDiv.innerText = "Connecting to Secure Server...";
-            if(type === 'login') {
-                setTimeout(() => {
-                    document.getElementById('auth-container').style.display = 'none';
-                    document.getElementById('main-panel').style.display = 'block';
-                    document.getElementById('user-nav').style.display = 'block';
-                    document.getElementById('nav-nick').innerText = "SYSTEM_USER";
-                }, 1000);
+
+            try {
+                // Vercel üzerinden bu adrese gitmek için tarayıcı izni ŞART.
+                const API_URL = "http://31.58.91.29:5000/api"; 
+                const response = await fetch(`${API_URL}/${type}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: emailInput.value, 
+                        password: passInput.value, 
+                        nickname: nickInput ? nickInput.value : null 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusDiv.style.color = "var(--success)";
+                    statusDiv.innerText = type === 'login' ? "Access Granted." : "Identity Established. Sign in now.";
+                    
+                    if(type === 'login') {
+                        setTimeout(() => {
+                            document.getElementById('auth-container').style.display = 'none';
+                            document.getElementById('main-panel').style.display = 'block';
+                            document.getElementById('user-nav').style.display = 'block';
+                            document.getElementById('nav-nick').innerText = data.nickname;
+                        }, 800);
+                    } else {
+                        setTimeout(() => toggleAuth(), 2000);
+                    }
+                } else {
+                    statusDiv.style.color = "#ff4444";
+                    statusDiv.innerText = data.error || "Access Denied.";
+                }
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                statusDiv.style.color = "#ff4444";
+                statusDiv.innerText = "BROWSER BLOCKED CONNECTION.";
+                alert("DIKKAT: Tarayıcı güvenli olmayan (HTTP) bağlantıyı engelledi. Kilit simgesinden 'Güvensiz İçerik' izni verdiğinden emin ol kanka!");
             }
         }
     </script>
